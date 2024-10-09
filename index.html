@@ -3,36 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer App</title>
+    <title>Timer and Topic App</title>
     <style>
         body {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: Arial, sans-serif;
+            position: relative;
         }
         #timer {
             font-size: 2rem;
-            margin-bottom: 20px;
+            position: absolute;
+            bottom: 160px;
         }
         .button {
             padding: 10px 20px;
             margin: 5px;
             font-size: 1rem;
         }
+        #startButton {
+            position: absolute;
+            bottom: 50px;
+        }
+        #resetButton {
+            position: absolute;
+            bottom: 50px;
+            left: 120px;
+        }
+        #stopButton {
+            position: absolute;
+            bottom: 50px;
+            right: 120px;
+        }
+        #newTopicButton {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #topicText {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
     </style>
 </head>
 <body>
     <div id="timer">01:30:00</div>
-    <button class="button" onclick="startTimer()">Start Timer</button>
-    <button class="button" onclick="stopTimer()">Stop Timer</button>
-    <button class="button" onclick="resetTimer()">Reset Timer</button>
+    <button class="button" id="startButton" onclick="startTimer()">Start Timer</button>
+    <button class="button" id="stopButton" onclick="stopTimer()">Stop Timer</button>
+    <button class="button" id="resetButton" onclick="resetTimer()">Reset Timer</button>
+    <button class="button" id="newTopicButton" onclick="newTopic()">New Topic</button>
+    <div id="topicText"></div>
 
     <script>
         let timerInterval;
         let timeRemaining = 90000; // 1 minute 30 seconds in milliseconds
+        let previousTopic = '';
+        const topics = ["Weather", "Shopping malls", "Paint", "Cardboard boxes", "Concerts", "A ceiling fan"];
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -61,6 +91,15 @@
             const seconds = String(Math.floor((timeRemaining % 60000) / 1000)).padStart(2, '0');
             const milliseconds = String((timeRemaining % 1000) / 10).padStart(2, '0');
             document.getElementById('timer').innerText = `${minutes}:${seconds}:${milliseconds}`;
+        }
+
+        function newTopic() {
+            let newTopic;
+            do {
+                newTopic = topics[Math.floor(Math.random() * topics.length)];
+            } while (newTopic === previousTopic);
+            previousTopic = newTopic;
+            document.getElementById('topicText').innerText = newTopic;
         }
 
         updateTimerDisplay(); // Initial display update
