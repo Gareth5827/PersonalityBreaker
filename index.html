@@ -48,6 +48,32 @@
             top: 50%;
             transform: translateY(-50%);
         }
+        #easyToggle {
+            position: absolute;
+            left: 20px;
+            top: calc(50% - 125px);
+        }
+        #mediumToggle {
+            position: absolute;
+            left: 20px;
+            top: calc(50% - 100px);
+        }
+        #hardToggle {
+            position: absolute;
+            left: 20px;
+            top: calc(50% - 75px);
+        }
+        #bannedWords {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+            height: 200px;
+            border: 1px solid black;
+            padding: 10px;
+            overflow-y: scroll;
+        }
     </style>
 </head>
 <body>
@@ -56,13 +82,19 @@
     <button class="button" id="stopButton" onclick="stopTimer()">Stop Timer</button>
     <button class="button" id="resetButton" onclick="resetTimer()">Reset Timer</button>
     <button class="button" id="newTopicButton" onclick="newTopic()">New Topic</button>
+    <button class="button" id="easyToggle" onclick="setDifficulty('easy')">Easy</button>
+    <button class="button" id="mediumToggle" onclick="setDifficulty('medium')">Medium</button>
+    <button class="button" id="hardToggle" onclick="setDifficulty('hard')">Hard</button>
     <div id="topicText"></div>
+    <div id="bannedWords"></div>
 
     <script>
         let timerInterval;
         let timeRemaining = 90000; // 1 minute 30 seconds in milliseconds
         let previousTopic = '';
         const topics = ["Weather", "Shopping malls", "Paint", "Cardboard boxes", "Concerts", "A ceiling fan"];
+        const words = ["apple", "banana", "grape", "pineapple", "lime", "lemon", "orange", "tangerine", "cherry", "crab apple", "plantain", "grapefruit", "clementine", "pomegranate", "passionfruit"];
+        let difficulty = 'easy';
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -100,6 +132,33 @@
             } while (newTopic === previousTopic);
             previousTopic = newTopic;
             document.getElementById('topicText').innerText = newTopic;
+            updateBannedWords();
+        }
+
+        function setDifficulty(level) {
+            difficulty = level;
+            document.getElementById('easyToggle').style.backgroundColor = level === 'easy' ? 'lightblue' : '';
+            document.getElementById('mediumToggle').style.backgroundColor = level === 'medium' ? 'lightblue' : '';
+            document.getElementById('hardToggle').style.backgroundColor = level === 'hard' ? 'lightblue' : '';
+        }
+
+        function updateBannedWords() {
+            let numWords;
+            if (difficulty === 'easy') {
+                numWords = Math.floor(Math.random() * 3) + 1;
+            } else if (difficulty === 'medium') {
+                numWords = Math.floor(Math.random() * 4) + 4;
+            } else {
+                numWords = Math.floor(Math.random() * 8) + 8;
+            }
+            const banned = [];
+            while (banned.length < numWords) {
+                const word = words[Math.floor(Math.random() * words.length)];
+                if (!banned.includes(word)) {
+                    banned.push(word);
+                }
+            }
+            document.getElementById('bannedWords').innerText = banned.join(', ');
         }
 
         updateTimerDisplay(); // Initial display update
