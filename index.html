@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer and Topic App</title>
+    <title>Personality Breaker</title>
     <style>
         body {
             display: flex;
@@ -30,12 +30,12 @@
         #resetButton {
             position: absolute;
             bottom: 35px;
-            left: 50px;
+            left: 25px;
         }
         #stopButton {
             position: absolute;
             bottom: 35px;
-            right: 50px;
+            right: 25px;
         }
         #newTopicButton {
             position: absolute;
@@ -70,13 +70,13 @@
         }
         #bannedWordsLabel {
             position: absolute;
-            right: 40px;
+            right: 60px;
             top: 100px;
             font-size: 1.2rem;
         }
         #bannedWords {
             position: absolute;
-            right: 40px;
+            right: 60px;
             top: 140px;
             width: 200px;
             height: 200px;
@@ -107,8 +107,8 @@
         let previousTopic = '';
         const topics = ["Weather", "Shopping malls", "Paint", "Cardboard boxes", "Concerts", "A ceiling fan"];
         const words = ["apple", "banana", "grape", "pineapple", "lime", "lemon", "orange", "tangerine", "cherry", "crab apple", "plantain", "grapefruit", "clementine", "pomegranate", "passionfruit"];
-        const songNames = ["Song1", "Song2", "Song3", "Song4", "Song5"]; // Add more song names here
-        const stationNames = ["Station1", "Station2", "Station3"]; // Add more station names here
+        const songNames = ["Cyanide by Bad Religion", "Too much, too young, too fast by Airbourne", "Poison by Alice Cooper", "Computer music by She", "Like sexy dynamite by The Orion Experience"]; // Add more song names here
+        const stationNames = ["CJIQ 88.3, the tri-cities alternative", "Chym 96.7, Kitcheners perfect music mix", "Country 106.7, #1 for country"]; // Add more station names here
         let difficulty = 'easy';
 
         function startTimer() {
