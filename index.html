@@ -30,12 +30,12 @@
         #resetButton {
             position: absolute;
             bottom: 35px;
-            left: 25px;
+            left: 100px;
         }
         #stopButton {
             position: absolute;
             bottom: 35px;
-            right: 25px;
+            right: 100px;
         }
         #newTopicButton {
             position: absolute;
@@ -44,14 +44,21 @@
         }
         #topicText {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            top: calc(50% + 170px);
             font-size: 1.5rem;
         }
         #specialText {
             position: absolute;
-            top: calc(50% - 50px);
-            font-size: 1rem;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 300px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 1px solid black;
+            padding: 10px;
+            overflow-y: scroll;
         }
         #easyToggle {
             position: absolute;
@@ -146,7 +153,7 @@
                 newTopic = topics[Math.floor(Math.random() * topics.length)];
             } while (newTopic === previousTopic);
             previousTopic = newTopic;
-            document.getElementById('topicText').innerText = newTopic;
+            document.getElementById('topicText').innerText = `Your topic is ${newTopic}!`;
             updateBannedWords();
             updateSpecialText();
         }
