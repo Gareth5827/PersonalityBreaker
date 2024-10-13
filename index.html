@@ -30,18 +30,17 @@
         #resetButton {
             position: absolute;
             bottom: 35px;
-            left: 60px;
+            left: 50px;
         }
         #stopButton {
             position: absolute;
             bottom: 35px;
-            right: 60px;
+            right: 50px;
         }
         #newTopicButton {
             position: absolute;
             left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: calc(50% + 50px);
         }
         #topicText {
             position: absolute;
@@ -49,33 +48,36 @@
             transform: translateY(-50%);
             font-size: 1.5rem;
         }
+        #specialText {
+            position: absolute;
+            top: calc(50% - 50px);
+            font-size: 1rem;
+        }
         #easyToggle {
             position: absolute;
             left: 20px;
-            top: calc(50% - 125px);
+            top: calc(50% - 200px);
         }
         #mediumToggle {
             position: absolute;
             left: 20px;
-            top: calc(50% - 175px);
+            top: calc(50% - 150px);
         }
         #hardToggle {
             position: absolute;
             left: 20px;
-            top: calc(50% - 225px);
+            top: calc(50% - 100px);
         }
         #bannedWordsLabel {
             position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-65%);
+            right: 40px;
+            top: 100px;
             font-size: 1.2rem;
         }
         #bannedWords {
             position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 40px;
+            top: 140px;
             width: 200px;
             height: 200px;
             border: 1px solid black;
@@ -94,6 +96,7 @@
     <button class="button" id="easyToggle" onclick="setDifficulty('easy')">Easy</button>
     <button class="button" id="mediumToggle" onclick="setDifficulty('medium')">Medium</button>
     <button class="button" id="hardToggle" onclick="setDifficulty('hard')">Hard</button>
+    <div id="specialText"></div>
     <div id="topicText"></div>
     <div id="bannedWordsLabel">Banned words</div>
     <div id="bannedWords"></div>
@@ -104,6 +107,8 @@
         let previousTopic = '';
         const topics = ["Weather", "Shopping malls", "Paint", "Cardboard boxes", "Concerts", "A ceiling fan"];
         const words = ["apple", "banana", "grape", "pineapple", "lime", "lemon", "orange", "tangerine", "cherry", "crab apple", "plantain", "grapefruit", "clementine", "pomegranate", "passionfruit"];
+        const songNames = ["Song1", "Song2", "Song3", "Song4", "Song5"]; // Add more song names here
+        const stationNames = ["Station1", "Station2", "Station3"]; // Add more station names here
         let difficulty = 'easy';
 
         function startTimer() {
@@ -143,6 +148,7 @@
             previousTopic = newTopic;
             document.getElementById('topicText').innerText = newTopic;
             updateBannedWords();
+            updateSpecialText();
         }
 
         function setDifficulty(level) {
@@ -150,9 +156,7 @@
             document.getElementById('easyToggle').style.backgroundColor = level === 'easy' ? 'lightblue' : '';
             document.getElementById('mediumToggle').style.backgroundColor = level === 'medium' ? 'lightblue' : '';
             document.getElementById('hardToggle').style.backgroundColor = level === 'hard' ? 'lightblue' : '';
-            if (level === 'easy') {
-                updateBannedWords(); // Update banned words immediately when difficulty changes
-            }
+            updateBannedWords(); // Update banned words immediately when difficulty changes
         }
 
         function updateBannedWords() {
@@ -174,8 +178,19 @@
             document.getElementById('bannedWords').innerText = banned.join(', ');
         }
 
-        // Set default difficulty to easy
+        function updateSpecialText() {
+            const song1 = songNames[Math.floor(Math.random() * songNames.length)];
+            let song2;
+            do {
+                song2 = songNames[Math.floor(Math.random() * songNames.length)];
+            } while (song2 === song1);
+            const station = stationNames[Math.floor(Math.random() * stationNames.length)];
+            document.getElementById('specialText').innerText = `That was ${song1} on ${station}. And coming up next we've got ${song2} only on ${station}!`;
+        }
+
+        // Set default difficulty to easy and generate the initial topic
         setDifficulty('easy');
+        newTopic();
 
         updateTimerDisplay(); // Initial display update
     </script>
