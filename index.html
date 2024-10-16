@@ -103,6 +103,9 @@
     <button class="button" id="easyToggle" onclick="setDifficulty('easy')">Easy</button>
     <button class="button" id="mediumToggle" onclick="setDifficulty('medium')">Medium</button>
     <button class="button" id="hardToggle" onclick="setDifficulty('hard')">Hard</button>
+    <button class="button" id="startRecording">Start Recording</button>
+    <button class="button" id="stopRecording" disabled>Stop Recording</button>
+    <audio id="audioPlayback" controls></audio>
     <div id="specialText"></div>
     <div id="topicText"></div>
     <div id="bannedWordsLabel">Banned words</div>
@@ -117,6 +120,8 @@
         const songNames = ["Cyanide by Bad Religion", "Too much, too young, too fast by Airbourne", "Poison by Alice Cooper", "Computer music by She", "Like sexy dynamite by The Orion Experience"]; // Add more song names here
         const stationNames = ["CJIQ 88.3, the tri-cities alternative", "Chym 96.7, Kitcheners perfect music mix", "Country 106.7, #1 for country"]; // Add more station names here
         let difficulty = 'easy';
+        let mediaRecorder;
+        let audioChunks = [];
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -165,6 +170,33 @@
             document.getElementById('hardToggle').style.backgroundColor = level === 'hard' ? 'lightblue' : '';
             updateBannedWords(); // Update banned words immediately when difficulty changes
         }
+
+            document.getElementById('startRecording').addEventListener('click', async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+    
+        mediaRecorder.addEventListener('dataavailable', event => {
+            audioChunks.push(event.data);
+        });
+    
+        mediaRecorder.addEventListener('stop', () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = document.getElementById('audioPlayback');
+            audio.src = audioUrl;
+            audioChunks = [];
+        });
+    
+        document.getElementById('startRecording').disabled = true;
+        document.getElementById('stopRecording').disabled = false;
+    });
+    
+    document.getElementById('stopRecording').addEventListener('click', () => {
+        mediaRecorder.stop();
+        document.getElementById('startRecording').disabled = false;
+        document.getElementById('stopRecording').disabled = true;
+    });
 
         function updateBannedWords() {
             let numWords;
