@@ -112,8 +112,8 @@
     <div id="bannedWords"></div>
 
     <script>
+        let timeElapsed = 0;
         let timerInterval;
-        let timeRemaining = 90000; // 1 minute 30 seconds in milliseconds
         let previousTopic = '';
         const topics = ["the weather", "shopping malls", "paint", "cardboard boxes", "concerts", "a ceiling fan"];
         const words = ["apple", "banana", "grape", "pineapple", "lime", "lemon", "orange", "tangerine", "cherry", "crab apple", "plantain", "grapefruit", "clementine", "pomegranate", "passionfruit"];
@@ -122,43 +122,48 @@
         let difficulty = 'easy';
         let mediaRecorder;
         let audioChunks = [];
-
+        
         function startTimer() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                timeRemaining -= 10;
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    timeRemaining = 0;
-                }
+                timeElapsed += 10;
                 updateTimerDisplay();
             }, 10);
         }
-
+        
         function stopTimer() {
             clearInterval(timerInterval);
         }
-
+        
         function resetTimer() {
             clearInterval(timerInterval);
-            timeRemaining = 90000; // Reset to 1 minute 30 seconds
+            timeElapsed = 0; // Reset to 0:00
             updateTimerDisplay();
         }
-
+        
         function updateTimerDisplay() {
-            const minutes = String(Math.floor(timeRemaining / 60000)).padStart(2, '0');
-            const seconds = String(Math.floor((timeRemaining % 60000) / 1000)).padStart(2, '0');
-            const milliseconds = String((timeRemaining % 1000) / 10).padStart(2, '0');
+            const minutes = String(Math.floor(timeElapsed / 60000)).padStart(2, '0');
+            const seconds = String(Math.floor((timeElapsed % 60000) / 1000)).padStart(2, '0');
+            const milliseconds = String((timeElapsed % 1000) / 10).padStart(2, '0');
             document.getElementById('timer').innerText = `${minutes}:${seconds}:${milliseconds}`;
         }
 
         function newTopic() {
             let newTopic;
+            const showTypes = ["Morning show", "Noon show", "Evening show"];
+            const times = ["Start", "Middle", "End"];
+            const months = ["April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "March"];
+        
             do {
                 newTopic = topics[Math.floor(Math.random() * topics.length)];
             } while (newTopic === previousTopic);
+        
+            const showType = showTypes[Math.floor(Math.random() * showTypes.length)];
+            const time = times[Math.floor(Math.random() * times.length)];
+            const month = months[Math.floor(Math.random() * months.length)];
+        
             previousTopic = newTopic;
-            document.getElementById('topicText').innerText = `Your topic is ${newTopic}!`;
+            document.getElementById('topicText').innerText = `Your topic is ${newTopic}! And it's a ${showType} at the ${time} of ${month}`;
             updateBannedWords();
             updateSpecialText();
         }
@@ -171,32 +176,33 @@
             updateBannedWords(); // Update banned words immediately when difficulty changes
         }
 
-            document.getElementById('startRecording').addEventListener('click', async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.start();
-    
-        mediaRecorder.addEventListener('dataavailable', event => {
-            audioChunks.push(event.data);
+        document.getElementById("startBtn").addEventListener("click", async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    document.getElementById("audioPlayback").src = audioUrl;
+                    audioChunks = [];
+                };
+
+                mediaRecorder.start();
+                document.getElementById("startBtn").disabled = true;
+                document.getElementById("stopBtn").disabled = false;
+            } catch (error) {
+                alert("Microphone access denied. Please check your permissions.");
+            }
         });
-    
-        mediaRecorder.addEventListener('stop', () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            const audioUrl = URL.createObjectURL(audioBlob);
-            const audio = document.getElementById('audioPlayback');
-            audio.src = audioUrl;
-            audioChunks = [];
+
+        document.getElementById("stopBtn").addEventListener("click", () => {
+            mediaRecorder.stop();
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
         });
-    
-        document.getElementById('startRecording').disabled = true;
-        document.getElementById('stopRecording').disabled = false;
-    });
-    
-    document.getElementById('stopRecording').addEventListener('click', () => {
-        mediaRecorder.stop();
-        document.getElementById('startRecording').disabled = false;
-        document.getElementById('stopRecording').disabled = true;
-    });
 
         function updateBannedWords() {
             let numWords;
