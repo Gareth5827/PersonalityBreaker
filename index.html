@@ -117,8 +117,23 @@
         let previousTopic = '';
         const topics = ["the weather", "shopping malls", "paint", "cardboard boxes", "concerts", "a ceiling fan"];
         const words = ["apple", "banana", "grape", "pineapple", "lime", "lemon", "orange", "tangerine", "cherry", "crab apple", "plantain", "grapefruit", "clementine", "pomegranate", "passionfruit"];
-        const songNames = ["Cyanide by Bad Religion", "Too much, too young, too fast by Airbourne", "Poison by Alice Cooper", "Computer music by She", "Like sexy dynamite by The Orion Experience"]; // Add more song names here
-        const stationNames = ["CJIQ 88.3, the tri-cities alternative", "Chym 96.7, Kitcheners perfect music mix", "Country 106.7, #1 for country"]; // Add more station names here
+        const stationsWithSongs = {
+    "CJIQ 88.3, the tri-cities alternative": [
+        "Cyanide by Bad Religion",
+        "Too much, too young, too fast by Airbourne",
+        "Poison by Alice Cooper"
+    ],
+    "Chym 96.7, Kitcheners perfect music mix": [
+        "Computer music by She",
+        "Like sexy dynamite by The Orion Experience",
+        "Song4"
+    ],
+    "Country 106.7, #1 for country": [
+        "Song5",
+        "Song6",
+        "Song7"
+    ]
+        };
         let difficulty = 'easy';
         let mediaRecorder;
         let audioChunks = [];
@@ -223,12 +238,13 @@
         }
 
         function updateSpecialText() {
-            const song1 = songNames[Math.floor(Math.random() * songNames.length)];
+            const station = Object.keys(stationsWithSongs)[Math.floor(Math.random() * Object.keys(stationsWithSongs).length)];
+            const songs = stationsWithSongs[station];
+            const song1 = songs[Math.floor(Math.random() * songs.length)];
             let song2;
             do {
-                song2 = songNames[Math.floor(Math.random() * songNames.length)];
+                song2 = songs[Math.floor(Math.random() * songs.length)];
             } while (song2 === song1);
-            const station = stationNames[Math.floor(Math.random() * stationNames.length)];
             document.getElementById('specialText').innerText = `That was ${song1} on ${station}. And coming up next we've got ${song2} only on ${station}!`;
         }
 
