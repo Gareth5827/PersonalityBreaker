@@ -150,8 +150,8 @@
 
         function newTopic() {
             let newTopic;
-            const showTypes = ["Morning show", "Noon show", "Evening show"];
-            const times = ["Start", "Middle", "End"];
+            const showTypes = ["morning show", "noon show", "evening show"];
+            const times = ["start", "middle", "end"];
             const months = ["April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "March"];
         
             do {
@@ -176,32 +176,31 @@
             updateBannedWords(); // Update banned words immediately when difficulty changes
         }
 
-        document.getElementById("startBtn").addEventListener("click", async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-
-                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-
-                mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    document.getElementById("audioPlayback").src = audioUrl;
-                    audioChunks = [];
-                };
-
-                mediaRecorder.start();
-                document.getElementById("startBtn").disabled = true;
-                document.getElementById("stopBtn").disabled = false;
-            } catch (error) {
-                alert("Microphone access denied. Please check your permissions.");
-            }
+            document.getElementById('startRecording').addEventListener('click', async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+    
+        mediaRecorder.addEventListener('dataavailable', event => {
+            audioChunks.push(event.data);
         });
-
-        document.getElementById("stopBtn").addEventListener("click", () => {
+    
+        mediaRecorder.addEventListener('stop', () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = document.getElementById('audioPlayback');
+            audio.src = audioUrl;
+            audioChunks = [];
+        });
+    
+            document.getElementById('startRecording').disabled = true;
+            document.getElementById('stopRecording').disabled = false;
+        });
+        
+        document.getElementById('stopRecording').addEventListener('click', () => {
             mediaRecorder.stop();
-            document.getElementById("startBtn").disabled = false;
-            document.getElementById("stopBtn").disabled = true;
+            document.getElementById('startRecording').disabled = false;
+            document.getElementById('stopRecording').disabled = true;
         });
 
         function updateBannedWords() {
